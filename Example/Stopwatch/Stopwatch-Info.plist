@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	
-	
 	<key>AppboyAPIKeys</key>
 	<dict>
 		<key>AU</key>
@@ -33,10 +31,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.appboy.stopwatch</string>
+			<string>branch.Foodie-Woodie</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>stopwatch</string>
+				<string>rubin</string>
 			</array>
 		</dict>
 	</array>
@@ -57,7 +55,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSExceptionDomains</key>
-	<string/>
+	<string></string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Please share your location.</string>
 	<key>UIBackgroundModes</key>
@@ -89,11 +87,11 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>branch_app_domain</key>
-	<string>appboy.app.link</string>
+	<string>rubin.app.link</string>
 	<key>branch_key</key>
 	<dict>
 		<key>live</key>
-		<string>key_live_ieufKEuaPmEyPngVcbb8woferFmUriF3</string>
+		<string>key_live_pnseoQQiHQKPZpAE26wYnaifxslWei4b</string>
 	</dict>
 </dict>
 </plist>

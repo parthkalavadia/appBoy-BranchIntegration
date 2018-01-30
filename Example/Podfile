@@ -9,13 +9,3 @@ target :Stopwatch do
   pod 'Firebase/DynamicLinks'
   pod 'Branch'
 end
-
-target :tvOS_Stopwatch do
-  platform :tvos, '9.0'
-  pod 'Appboy-tvOS-SDK'
-end
-
-target :tvOS_TVML_Stopwatch do
-  platform :tvos, '9.0'
-  pod 'Appboy-tvOS-SDK'
-end

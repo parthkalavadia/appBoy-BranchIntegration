@@ -10,9 +10,9 @@
 #import <Firebase/Firebase.h>
 
 #ifdef PUSH_DEV
-static NSString *const AppboyApiKey = @"appboy-sample-ios";
+static NSString *const AppboyApiKey = @"03600f64-44df-49d8-bd4d-5bb5563f0a3d";
 #else
-static NSString *const AppboyApiKey = @"appboy-sample-ios";
+static NSString *const AppboyApiKey = @"03600f64-44df-49d8-bd4d-5bb5563f0a3d";
 #endif
 static NSString *const CrittercismAppId = @"51b67d141386207417000002";
 static NSString *const CrittercismObserverName = @"CRCrashNotification";
@@ -23,6 +23,16 @@ static NSString *const CrittercismObserverName = @"CRCrashNotification";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   NSLog(@"Application delegate method didFinishLaunchingWithOptions is called with launch options: %@", launchOptions);
+    
+    // Define and initialize Branch
+    Branch *branch = [Branch getInstance];
+    [branch setDebug];
+    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+        if (!error && params) {
+            // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
+            NSLog(@"Calling Branch deep link handler on params: %@", params.description);
+        }
+    }];
   
   NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
 
@@ -96,18 +106,20 @@ static NSString *const CrittercismObserverName = @"CRCrashNotification";
   [FIROptions defaultOptions].deepLinkURLScheme = @"stopwatch";
   [FIRApp configure];
   
-  // Define and initialize Branch
-  Branch *branch = [Branch getInstance];
-  [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
-    if (!error && params) {
-      // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
-      NSLog(@"Calling Branch deep link handler on params: %@", params.description);
-    }
-  }];
+  
 
   [self setUpRemoteNotification];
 
   return YES;
+}
+
+- (BOOL)handleAppboyURL:(NSURL *)url fromChannel:(ABKChannel)channel withExtras:(NSDictionary *)extras {
+    BOOL handledByBranch = [[Branch getInstance] handleDeepLinkWithNewSession:url];
+    if (handledByBranch) {
+        return NO;
+    }
+    // Let Appboy handle links otherwise
+    return YES;
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *restorableObjects))restorationHandler {
@@ -123,7 +135,7 @@ static NSString *const CrittercismObserverName = @"CRCrashNotification";
   }];
   BOOL handledByBranch = [[Branch getInstance] continueUserActivity:userActivity];
   
-  return handledByBranch || handledByFirebase;
+  return YES;
 }
 
 // Pass the deviceToken to Appboy as well
@@ -287,21 +299,24 @@ static NSString *const CrittercismObserverName = @"CRCrashNotification";
 
 #pragma mark - ABKURLDelegate
 
-- (BOOL)handleAppboyURL:(NSURL *)url fromChannel:(ABKChannel)channel withExtras:(NSDictionary *)extras {
-  // Use ABKURLDelegate to handle Universal Links
-  BOOL handledByFirebase = [[FIRDynamicLinks dynamicLinks] handleUniversalLink:url completion:^(FIRDynamicLink * _Nullable dynamicLink, NSError * _Nullable error) {
-    NSLog(@"Firebase FIRDynamicLink is %@", dynamicLink.url.absoluteString);
-    [self showAlertWithTitle:@"Firebase Universal Link (ABKURLDelegate)" andMessage:[NSString stringWithFormat:@"%@ -> %@", url.absoluteString, dynamicLink.url.absoluteString]];
-  }];
-  if (handledByFirebase) {
-    return YES;
-  } else if ([[url.host lowercaseString] isEqualToString:@"sweeney.appboy.com"]) {
-    [self handleUniversalLinkString:[[url absoluteString] stringByRemovingPercentEncoding] withABKURLDelegate:YES];
-    return YES;
-  }
-  // Let Appboy handle links otherwise
-  return NO;
-}
+//- (BOOL)handleAppboyURL:(NSURL *)url fromChannel:(ABKChannel)channel withExtras:(NSDictionary *)extras {
+//  // Use ABKURLDelegate to handle Universal Links
+//  BOOL handledByFirebase = [[FIRDynamicLinks dynamicLinks] handleUniversalLink:url completion:^(FIRDynamicLink * _Nullable dynamicLink, NSError * _Nullable error) {
+//    NSLog(@"Firebase FIRDynamicLink is %@", dynamicLink.url.absoluteString);
+//    [self showAlertWithTitle:@"Firebase Universal Link (ABKURLDelegate)" andMessage:[NSString stringWithFormat:@"%@ -> %@", url.absoluteString, dynamicLink.url.absoluteString]];
+//  }];
+//  if (handledByFirebase) {
+//    return YES;
+//  } else if ([[url.host lowercaseString] isEqualToString:@"sweeney.appboy.com"]) {
+//    [self handleUniversalLinkString:[[url absoluteString] stringByRemovingPercentEncoding] withABKURLDelegate:YES];
+//    return YES;
+//  }
+//  // Let Appboy handle links otherwise
+//    [[Branch getInstance] resetUserSession];
+//    [[Branch getInstance] handleDeepLink:url];
+//    
+//  return NO;
+//}
 
 #pragma mark - Apteligent/Crittercism
 

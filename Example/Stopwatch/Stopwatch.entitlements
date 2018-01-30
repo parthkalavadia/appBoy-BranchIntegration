@@ -11,6 +11,8 @@
 		<string>applinks:ku67u.app.goo.gl</string>
 		<string>applinks:appboy.app.link</string>
 		<string>applinks:appboy-alternate.app.link</string>
+		<string>applinks:rubin.app.link</string>
+		<string>applinks:rubin-alternate.app.link</string>
 	</array>
 </dict>
 </plist>
